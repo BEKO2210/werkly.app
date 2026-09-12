@@ -1,0 +1,6 @@
+{
+  "csv": "id,brand,title,amount_eur,status,status_de,due_at,notes,updated_at\nabc,Nike,Summer Reel,1500.00,negotiation,Verhandlung,2026-10-01,,2026-09-12T12:00:00.000Z\n",
+  "content_type": "text/csv",
+  "row_count": 1,
+  "source": "edge"
+}

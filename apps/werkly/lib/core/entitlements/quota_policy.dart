@@ -1,4 +1,4 @@
-/// Soft quota policy — Free calendar + caption + hub limits; content stays readable.
+/// Soft quota policy — Free calendar + caption + hub + deals limits; content stays readable.
 abstract final class QuotaPolicy {
   static const freeWeeklyCalendarPosts = 10;
   static const freeMonthlyCaptions = 10;
@@ -8,10 +8,15 @@ abstract final class QuotaPolicy {
   /// Free: exactly 1 hub.
   static const freeHubLimit = 1;
 
+  /// Free: max 5 open deals (status ≠ Abgerechnet/Verloren).
+  static const freeOpenDeals = 5;
+
   static const paywallTriggerCalendar = 'limit_calendar_posts';
   static const paywallTriggerTemplates = 'feature_templates';
   static const paywallTriggerCaptions = 'limit_captions';
   static const paywallTriggerHubBranding = 'limit_hub_branding';
+  static const paywallTriggerDeals = 'limit_deals';
+  static const paywallTriggerDealExport = 'feature_deal_export';
 
   /// Returns true when creating another post should soft-gate to paywall.
   static bool shouldBlockCalendarCreate({
@@ -47,6 +52,18 @@ abstract final class QuotaPolicy {
     if (isPro) return false;
     return wantsBrandingOff || wantsCustomSlug;
   }
+
+  /// Soft-gate when Free would create/reopen beyond 5 open deals.
+  static bool shouldBlockDealCreate({
+    required bool isPro,
+    required int currentOpenCount,
+  }) {
+    if (isPro) return false;
+    return currentOpenCount >= freeOpenDeals;
+  }
+
+  /// CSV export is Pro-only (soft gate).
+  static bool shouldBlockDealExport({required bool isPro}) => !isPro;
 }
 
 /// Pure helper for unit tests (ISO-week count already computed by caller).
@@ -74,4 +91,15 @@ bool shouldSoftGateHubBrandingOrSlug({
     wantsBrandingOff: wantsBrandingOff,
     wantsCustomSlug: wantsCustomSlug,
   );
+}
+
+bool shouldSoftGateDealCreate(int currentOpenCount, {bool isPro = false}) {
+  return QuotaPolicy.shouldBlockDealCreate(
+    isPro: isPro,
+    currentOpenCount: currentOpenCount,
+  );
+}
+
+bool shouldSoftGateDealExport({bool isPro = false}) {
+  return QuotaPolicy.shouldBlockDealExport(isPro: isPro);
 }

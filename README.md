@@ -50,6 +50,23 @@ This repository is the Flutter scaffold under `apps/werkly`.
 - Soft paywall `limit_hub_branding` on branding toggle / custom slug when !pro
 - Share: system sheet + copy link; preview Flutter mock of public landing
 
+## F4 — Deal-Tracker light
+
+| Screen | ID | Path |
+|--------|----|------|
+| DealListScreen | S-40 | `/deals` |
+| DealEditorScreen | S-41 | `/deals/new`, `/deals/:id` |
+| DealExportScreen | S-42 | `/deals/export` |
+
+**Contracts**
+
+- Local CRUD deals (memory + optional JSON persist) · Backend table `deals` + soft-delete
+- Status enums: `inquiry|negotiation|won|invoiced|lost` (DE: Anfrage→…→Abgerechnet/Verloren)
+- Open = status ≠ invoiced|lost; Free: **max 5 open** → soft paywall `limit_deals`
+- Amounts: `amount_cents` + EUR
+- CSV Pro: Edge `GET /functions/v1/deals-export` + local CSV fallback
+- Disclaimer: Rechnung selbst / Steuerberater — **keine Buchhaltung**
+
 ## Run
 
 ```bash
@@ -67,8 +84,9 @@ cd apps/werkly
 flutter test test/features/calendar/
 flutter test test/features/captions/
 flutter test test/features/hub/
+flutter test test/features/deals/
 ```
 
 ## Out of scope (this slice)
 
-Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish, real public web host.
+Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish, real public web host, bookkeeping/invoicing.
