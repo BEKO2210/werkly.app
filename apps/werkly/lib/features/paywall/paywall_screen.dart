@@ -27,6 +27,8 @@ class PaywallScreen extends StatelessWidget {
         'Max. 5 offene Deals im Free — mit Pro unbegrenzt tracken',
       QuotaPolicy.paywallTriggerDealExport =>
         'CSV-Export ist Teil von Werkly Pro',
+      QuotaPolicy.paywallTriggerStripeProducts =>
+        'Mehr Produkte verkaufen mit Pro — Free: Tip oder 1 Produkt',
       _ => 'Mehr Kontingent, Insights und Deals mit Pro.',
     };
 

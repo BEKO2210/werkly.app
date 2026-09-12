@@ -1,0 +1,8 @@
+{
+  "error": "tip_amount_cents erforderlich wenn kind=tip",
+  "code": "bad_request",
+  "details": {
+    "field": "tip_amount_cents",
+    "minimum": 100
+  }
+}

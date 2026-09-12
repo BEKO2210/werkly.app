@@ -24,16 +24,3 @@ abstract final class DealValidation {
   static bool brandAndTitleOk(String brand, String title) =>
       brand.trim().isNotEmpty && title.trim().isNotEmpty;
 }
-
-bool shouldSoftGateDealCreate({
-  required int currentOpenCount,
-  bool isPro = false,
-  bool nextStatusIsOpen = true,
-}) {
-  return DealValidation.wouldExceedOpenLimit(
-    isPro: isPro,
-    currentOpenCount: currentOpenCount,
-    nextStatusIsOpen: nextStatusIsOpen,
-    wasAlreadyOpen: false,
-  );
-}

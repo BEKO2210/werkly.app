@@ -1,0 +1,10 @@
+{
+  "error": "Produkt-Kontingent erreicht (Free: Tip oder 1 Produkt)",
+  "code": "quota_exceeded",
+  "details": {
+    "used": 1,
+    "limit": 1,
+    "plan": "free",
+    "paywall_trigger": "limit_stripe_products"
+  }
+}

@@ -277,6 +277,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'soon',
             name: RouteNames.monetizeComingSoon,
+            redirect: (context, state) => RoutePaths.monetize,
             builder: (context, state) => const ComingSoonMonetizeScreen(),
           ),
         ],

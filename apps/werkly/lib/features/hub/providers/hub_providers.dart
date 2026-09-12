@@ -126,6 +126,7 @@ class HubEditorNotifier extends StateNotifier<AsyncValue<Hub>> {
     required HubLinkType type,
     required String label,
     String? url,
+    String? refId,
   }) async {
     final current = state.valueOrNull;
     if (current == null) throw StateError('No hub');
@@ -134,6 +135,7 @@ class HubEditorNotifier extends StateNotifier<AsyncValue<Hub>> {
       type: type,
       label: label,
       url: url,
+      refId: refId,
     );
     await refresh();
     return link;

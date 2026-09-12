@@ -67,6 +67,31 @@ This repository is the Flutter scaffold under `apps/werkly`.
 - CSV Pro: Edge `GET /functions/v1/deals-export` + local CSV fallback
 - Disclaimer: Rechnung selbst / Steuerberater — **keine Buchhaltung**
 
+## F5 — Stripe Monetize light
+
+| Screen | ID | Path |
+|--------|----|------|
+| MonetizeHomeScreen | S-50 | `/more/monetize` |
+| StripeConnectScreen | S-51 | `/more/monetize/connect` |
+| ProductEditorScreen | S-52 | `/more/monetize/product`, `/more/monetize/product/:id` |
+| TipLinkEditorScreen | S-53 | `/more/monetize/tip`, `/more/monetize/tip/:id` |
+| SalesListScreen | S-54 | `/more/monetize/sales` |
+
+**Contracts**
+
+- Edge: `POST /functions/v1/stripe-connect-onboard` + `POST /stripe-checkout` (see `STRIPE-CONNECT-CHECKOUT-MOBILE-V1.md`)
+- Status: `none` \| `pending` \| `active` \| `restricted` — onboard → **active** before products/tips/checkout
+- Free: **Tip XOR 1 Produkt** → soft paywall `limit_stripe_products`
+- Orders **GET only** · fee-bps Free 10 % / Pro 5 % (`plan_limits`)
+- Mock Connect + mock Checkout URL when Edge not configured (`X-Werkly-Mock` / fixtures)
+- Hub attach: `HubLink` type `product`\|`tip` + `refId`
+- Copy: **RC Pro 9,99 €/Mo ≠ Stripe Creator-Sales**
+- S-70 Coming Soon **redirects** to S-50
+
+## Maya path (F1–F5)
+
+Auth → Goal → Caption/Post → Hub → Deal → **Mehr → Verkaufen**: mock-Connect → Produkt **oder** Tip live → an Hub hängen → Umsatzliste.
+
 ## Run
 
 ```bash
@@ -85,6 +110,7 @@ flutter test test/features/calendar/
 flutter test test/features/captions/
 flutter test test/features/hub/
 flutter test test/features/deals/
+flutter test test/features/monetize/
 ```
 
 ## Out of scope (this slice)

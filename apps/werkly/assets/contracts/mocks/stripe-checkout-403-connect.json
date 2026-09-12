@@ -1,0 +1,8 @@
+{
+  "error": "Stripe Connect ist noch nicht aktiv",
+  "code": "connect_inactive",
+  "details": {
+    "stripe_connect_status": "pending",
+    "hint": "S-51 Onboarding abschließen"
+  }
+}
