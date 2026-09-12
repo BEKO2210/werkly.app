@@ -1,0 +1,35 @@
+{
+  "slug": "belkis-hub",
+  "display_name": "Belkis Hub",
+  "bio": "Creator · Beauty & Lifestyle",
+  "avatar_url": null,
+  "show_branding": true,
+  "links": [
+    {
+      "id": "00000000-0000-4000-8000-0000000000a1",
+      "type": "social",
+      "title": "Instagram",
+      "url": "https://instagram.com/belkis"
+    },
+    {
+      "id": "00000000-0000-4000-8000-0000000000a2",
+      "type": "media_kit",
+      "title": "Media Kit",
+      "url": "https://werkly.app/h/belkis-hub/kit"
+    }
+  ],
+  "media_kit": {
+    "id": "00000000-0000-4000-8000-0000000000b1",
+    "client_id": "00000000-0000-4000-8000-0000000000b1",
+    "user_id": "local-user",
+    "hub_id": "00000000-0000-4000-8000-000000000001",
+    "niches": ["Beauty", "Lifestyle"],
+    "platforms": [{ "platform": "Instagram", "followers": 12000 }],
+    "contact_email": "hello@example.com",
+    "contact_ig": "belkis",
+    "example_links": ["https://instagram.com/p/example"],
+    "pitch": "Authentic collabs",
+    "public_slug": "kit-collabs-welcome",
+    "updated_at": "2026-09-12T12:00:00.000Z"
+  }
+}

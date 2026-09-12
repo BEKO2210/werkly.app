@@ -21,6 +21,8 @@ class PaywallScreen extends StatelessWidget {
         'Wochen-Vorlagen sind Teil von Werkly Pro',
       QuotaPolicy.paywallTriggerCaptions =>
         '10 Captions/Monat aufgebraucht — mit Pro weiter generieren (DE/EN)',
+      QuotaPolicy.paywallTriggerHubBranding =>
+        'Custom Slug & Branding aus — mit Pro brand-ready Hub (9,99 €/Mo)',
       _ => 'Mehr Kontingent, Insights und Deals mit Pro.',
     };
 

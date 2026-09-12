@@ -32,6 +32,24 @@ This repository is the Flutter scaffold under `apps/werkly`.
 - Deep-link **In Kalender** → PostEditor with `CaptionPrefill` (`go_router` extra)
 - Online required for generate; policy reject on empty / `BLOCK`
 
+## F3 — Link-Hub + Media Kit
+
+| Screen | ID | Path |
+|--------|----|------|
+| HubEditorScreen | S-30 | `/hub` |
+| HubLinkEditorScreen | S-31 | `/hub/link`, `/hub/link/:id` |
+| MediaKitEditorScreen | S-32 | `/hub/media-kit` |
+| HubPreviewScreen | S-33 | `/hub/preview` |
+| HubAnalyticsScreen | S-34 | `/hub/analytics` |
+
+**Contracts**
+
+- Local CRUD hubs / hub_links / media_kits (memory + optional JSON persist)
+- Public URL: `https://werkly.app/h/{slug}` · OpenAPI `GET public-hub?slug=` + `POST track-hub-click`
+- Free: **1 hub** + **Powered by Werkly** branding; Pro: custom slug + branding off
+- Soft paywall `limit_hub_branding` on branding toggle / custom slug when !pro
+- Share: system sheet + copy link; preview Flutter mock of public landing
+
 ## Run
 
 ```bash
@@ -48,8 +66,9 @@ flutter run -t lib/main.dart
 cd apps/werkly
 flutter test test/features/calendar/
 flutter test test/features/captions/
+flutter test test/features/hub/
 ```
 
 ## Out of scope (this slice)
 
-Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish.
+Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish, real public web host.

@@ -5,6 +5,7 @@
 .gitignore
 F1-CHANGELOG.md
 F2-CHANGELOG.md
+F3-CHANGELOG.md
 FILELIST.txt
 README.md
 apps/werkly/.metadata
@@ -36,6 +37,9 @@ apps/werkly/assets/contracts/mocks/generate-caption-200-en.json
 apps/werkly/assets/contracts/mocks/generate-caption-200.json
 apps/werkly/assets/contracts/mocks/generate-caption-400.json
 apps/werkly/assets/contracts/mocks/generate-caption-402.json
+apps/werkly/assets/contracts/mocks/public-hub-200.json
+apps/werkly/assets/contracts/mocks/public-hub-404.json
+apps/werkly/assets/contracts/mocks/track-hub-click-204.json
 apps/werkly/lib/app.dart
 apps/werkly/lib/bootstrap.dart
 apps/werkly/lib/core/config/flavor.dart
@@ -82,11 +86,22 @@ apps/werkly/lib/features/captions/widgets/caption_variant_card.dart
 apps/werkly/lib/features/deals/deal_editor_screen.dart
 apps/werkly/lib/features/deals/deal_export_screen.dart
 apps/werkly/lib/features/deals/deal_list_screen.dart
+apps/werkly/lib/features/hub/data/hub_file_store.dart
+apps/werkly/lib/features/hub/data/hub_memory_store.dart
+apps/werkly/lib/features/hub/data/local_hub_repository.dart
+apps/werkly/lib/features/hub/data/public_hub_client.dart
+apps/werkly/lib/features/hub/data/track_hub_click_client.dart
+apps/werkly/lib/features/hub/domain/hub_models.dart
+apps/werkly/lib/features/hub/domain/hub_repository.dart
+apps/werkly/lib/features/hub/domain/hub_slug.dart
+apps/werkly/lib/features/hub/domain/hub_validation.dart
+apps/werkly/lib/features/hub/domain/public_hub_api.dart
 apps/werkly/lib/features/hub/hub_analytics_screen.dart
 apps/werkly/lib/features/hub/hub_editor_screen.dart
 apps/werkly/lib/features/hub/hub_link_editor_screen.dart
 apps/werkly/lib/features/hub/hub_preview_screen.dart
 apps/werkly/lib/features/hub/media_kit_editor_screen.dart
+apps/werkly/lib/features/hub/providers/hub_providers.dart
 apps/werkly/lib/features/monetize/coming_soon_monetize_screen.dart
 apps/werkly/lib/features/monetize/monetize_home_screen.dart
 apps/werkly/lib/features/monetize/product_editor_screen.dart
@@ -117,4 +132,5 @@ apps/werkly/test/features/calendar/local_calendar_crud_test.dart
 apps/werkly/test/features/calendar/post_validation_quota_test.dart
 apps/werkly/test/features/captions/caption_validation_quota_test.dart
 apps/werkly/test/features/captions/edge_caption_client_test.dart
+apps/werkly/test/features/hub/hub_slug_gate_test.dart
 apps/werkly/test/widget_smoke_test.dart
