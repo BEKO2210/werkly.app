@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:werkly/core/auth/session_providers.dart';
+import 'package:werkly/features/account/account_screen.dart';
 import 'package:werkly/features/auth/splash_auth_screen.dart';
 import 'package:werkly/features/calendar/post_editor_screen.dart';
 import 'package:werkly/features/calendar/reminder_settings_screen.dart';
@@ -36,17 +38,40 @@ import 'package:werkly/features/settings/settings_screen.dart';
 import 'package:werkly/features/shell/main_shell.dart';
 import 'package:werkly/router/route_paths.dart';
 
-/// Soft-auth redirect stub: never hard-blocks in MVP scaffold.
-/// Default after auth stub → `/planen` (S-10 WeekCalendarScreen).
-String? softAuthRedirect(BuildContext context, GoRouterState state) {
-  // TODO: wire Supabase session. For scaffold, always allow.
+bool _isPublicPath(String location) {
+  return location == RoutePaths.auth ||
+      location.startsWith('/onboarding') ||
+      location.startsWith('/permissions') ||
+      location.startsWith('${RoutePaths.legal}/');
+}
+
+/// Session-driven soft redirect: unauthenticated → `/auth`;
+/// authenticated on `/auth` → `/planen`. Does not trap paywall/settings.
+String? sessionRedirect(Ref ref, GoRouterState state) {
+  final session = ref.read(authSessionProvider);
+  final loc = state.matchedLocation;
+  final authed = session.isAuthenticated;
+
+  if (!authed && !_isPublicPath(loc)) {
+    return RoutePaths.auth;
+  }
+  if (authed && loc == RoutePaths.auth) {
+    return RoutePaths.planen;
+  }
   return null;
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final refresh = ValueNotifier<int>(0);
+  ref.listen(authSessionProvider, (_, __) {
+    refresh.value++;
+  });
+  ref.onDispose(refresh.dispose);
+
   return GoRouter(
     initialLocation: RoutePaths.auth,
-    redirect: softAuthRedirect,
+    refreshListenable: refresh,
+    redirect: (context, state) => sessionRedirect(ref, state),
     routes: [
       // —— Auth & Onboarding ——
       GoRoute(
@@ -91,7 +116,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return MainShell(navigationShell: navigationShell);
         },
         branches: [
-          // TabPlanenStack
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -132,7 +156,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // TabTexteStack
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -158,7 +181,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // TabHubStack
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -199,7 +221,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          // TabDealsStack
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -207,7 +228,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 name: RouteNames.dealList,
                 builder: (context, state) => const DealListScreen(),
                 routes: [
-                  // Literal `new` before `:id` so it is not captured as id.
                   GoRoute(
                     path: 'new',
                     name: RouteNames.dealEditor,
@@ -220,7 +240,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: ':id',
-                    // Same Screen-ID S-41; path /deals/:id (name unique → use path push)
                     builder: (context, state) => DealEditorScreen(
                       id: state.pathParameters['id'],
                     ),
@@ -232,7 +251,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // —— MoreStack / overlays (no 5th tab) ——
+      // —— MoreStack / overlays ——
       GoRoute(
         path: RoutePaths.monetize,
         name: RouteNames.monetizeHome,
@@ -291,6 +310,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: RoutePaths.settings,
         name: RouteNames.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.account,
+        name: RouteNames.account,
+        builder: (context, state) => const AccountScreen(),
       ),
       GoRoute(
         path: '${RoutePaths.legal}/:doc',

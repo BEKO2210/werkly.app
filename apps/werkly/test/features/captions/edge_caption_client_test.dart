@@ -21,6 +21,7 @@ void main() {
     final client = EdgeCaptionClient(
       baseUrl: 'https://example.supabase.co',
       accessTokenProvider: () async => 'test-jwt',
+      mockHeader: true,
       httpPost: (req) async {
         expect(req.uri.path, contains('/functions/v1/generate-caption'));
         expect(req.headers['Authorization'], 'Bearer test-jwt');

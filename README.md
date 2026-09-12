@@ -88,6 +88,41 @@ This repository is the Flutter scaffold under `apps/werkly`.
 - Copy: **RC Pro 9,99 €/Mo ≠ Stripe Creator-Sales**
 - S-70 Coming Soon **redirects** to S-50
 
+
+## Account · Auth · KI-Key (P0 Live)
+
+| Screen | ID | Path |
+|--------|----|------|
+| SplashAuthScreen | S-00 | `/auth` |
+| AccountScreen | **S-63** | `/more/account` |
+| SettingsScreen | S-61 | `/more/settings` |
+| PaywallScreen | S-60 | `/paywall` |
+
+**Brand (interim locked):** Primary `#0F766E` · Pro-badge Indigo `#4338CA`.
+
+### AppFlags
+
+Derived from config presence (see `lib/core/config/app_flags.dart`):
+
+| Flag | Meaning |
+|------|---------|
+| `mockAuth` | No `SUPABASE_URL`+`SUPABASE_ANON_KEY` dart-define → Gast/Mock login |
+| `mockCaptions` | Captions use local Mock + UI badge „Mock“ |
+| `mockStripe` | Stripe Edge mocked |
+| `useLiveCaptions` | Edge `generate-caption` (server **or** BYOK `X-Werkly-LLM-Key`) |
+
+Live run example:
+
+```bash
+flutter run -t lib/main_dev.dart \
+  --dart-define=SUPABASE_URL=https://YOUR.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=YOUR_ANON_KEY
+```
+
+User LLM key: Settings → KI / Captions → Secure Storage `werkly_llm_api_key` (never committed).
+
+See `LIVE-AUTH-ACCOUNT-V1-CHANGELOG.md`.
+
 ## Maya path (F1–F5)
 
 Auth → Goal → Caption/Post → Hub → Deal → **Mehr → Verkaufen**: mock-Connect → Produkt **oder** Tip live → an Hub hängen → Umsatzliste.
@@ -115,4 +150,4 @@ flutter test test/features/monetize/
 
 ## Out of scope (this slice)
 
-Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish, real public web host, bookkeeping/invoicing.
+Video gen, GitHub push, Play Store upload, auto-publish, real public web host, bookkeeping/invoicing. Live Auth/Caption need Belkis dart-defines + Backend Edge (see changelog blockers).

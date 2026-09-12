@@ -309,11 +309,34 @@ class _HubEditorScreenState extends ConsumerState<HubEditorScreen> {
                 ],
               ),
               if (hub.links.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Text(
-                    'Noch keine Links — füge mindestens einen hinzu, um share-ready zu sein.',
-                    textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.link_off,
+                        size: 48,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Erster Link = Bio fertig',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Füge einen Link hinzu, dann teilen.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 16),
+                      FilledButton.icon(
+                        onPressed: () => context.push(RoutePaths.hubLink),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Ersten Link hinzufügen'),
+                      ),
+                    ],
                   ),
                 )
               else

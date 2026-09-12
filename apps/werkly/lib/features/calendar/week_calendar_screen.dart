@@ -10,6 +10,8 @@ import 'package:werkly/features/calendar/widgets/post_card.dart';
 import 'package:werkly/features/calendar/widgets/week_strip.dart';
 import 'package:werkly/router/route_paths.dart';
 import 'package:werkly/router/screen_ids.dart';
+import 'package:werkly/ui/widgets/empty_state.dart';
+import 'package:werkly/ui/widgets/offline_banner.dart';
 import 'package:werkly/ui/widgets/quota_banner.dart';
 
 /// Screen-ID: S-10 — Week calendar (Mo–So), ISO week Europe/Berlin.
@@ -83,6 +85,7 @@ class _WeekCalendarScreenState extends ConsumerState<WeekCalendarScreen> {
       ),
       body: Column(
         children: [
+          const OfflineBanner(),
           QuotaBanner(
             used: count,
             limit: QuotaPolicy.freeWeeklyCalendarPosts,
@@ -135,30 +138,15 @@ class _WeekCalendarScreenState extends ConsumerState<WeekCalendarScreen> {
               ),
               data: (posts) {
                 if (posts.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'Noch keine Posts in dieser Woche.',
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
-                          FilledButton(
-                            onPressed: () =>
-                                context.push(RoutePaths.planenPost),
-                            child: const Text('Ersten Post planen'),
-                          ),
-                          TextButton(
-                            onPressed: () =>
-                                context.push(RoutePaths.planenTemplates),
-                            child: const Text('Vorlage nutzen'),
-                          ),
-                        ],
-                      ),
-                    ),
+                  return EmptyState(
+                    icon: Icons.calendar_month_outlined,
+                    message: 'Noch keine Posts diese Woche',
+                    subtitle: 'Reminder · du postest manuell',
+                    ctaLabel: 'Ersten Post planen',
+                    onCta: () => context.push(RoutePaths.planenPost),
+                    secondaryLabel: 'Vorlage nutzen',
+                    onSecondary: () =>
+                        context.push(RoutePaths.planenTemplates),
                   );
                 }
                 // Group by weekday for Tagesliste

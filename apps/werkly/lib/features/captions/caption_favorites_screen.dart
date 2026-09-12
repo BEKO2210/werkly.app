@@ -6,6 +6,7 @@ import 'package:werkly/features/captions/domain/caption_models.dart';
 import 'package:werkly/features/captions/providers/caption_providers.dart';
 import 'package:werkly/router/route_paths.dart';
 import 'package:werkly/router/screen_ids.dart';
+import 'package:werkly/ui/widgets/empty_state.dart';
 
 /// Screen-ID: S-22 — Favorites list; copy / In Kalender.
 class CaptionFavoritesScreen extends ConsumerWidget {
@@ -26,8 +27,12 @@ class CaptionFavoritesScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (favs) {
           if (favs.isEmpty) {
-            return const Center(
-              child: Text('Noch keine Favoriten — speichere Varianten in S-21.'),
+            return EmptyState(
+              icon: Icons.favorite_border,
+              message: 'Noch keine Favoriten',
+              subtitle: 'Speichere Varianten nach dem Generieren.',
+              ctaLabel: 'Caption generieren',
+              onCta: () => context.go(RoutePaths.texte),
             );
           }
           return ListView.separated(

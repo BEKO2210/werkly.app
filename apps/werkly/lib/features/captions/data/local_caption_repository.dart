@@ -15,6 +15,7 @@ class LocalCaptionRepository implements CaptionRepository {
     MockCaptionGenerator? mock,
     EdgeCaptionClient? edge,
     Uuid? uuid,
+    this.preferMock = false,
   })  : _store = store,
         _mock = mock ?? MockCaptionGenerator(),
         _edge = edge ?? EdgeCaptionClient(),
@@ -24,6 +25,9 @@ class LocalCaptionRepository implements CaptionRepository {
   final MockCaptionGenerator _mock;
   final EdgeCaptionClient _edge;
   final Uuid _uuid;
+
+  /// When true (AppFlags.mockCaptions), always use local Mock.
+  final bool preferMock;
 
   EdgeCaptionClient get edgeClient => _edge;
   MockCaptionGenerator get mockGenerator => _mock;
@@ -138,7 +142,7 @@ class LocalCaptionRepository implements CaptionRepository {
       platform: request.platform,
     );
 
-    final useEdge = !forceMock && _edge.isConfigured;
+    final useEdge = !forceMock && !preferMock && _edge.isConfigured;
     try {
       final GenerateCaptionResponse wire;
       final bool usedMock;

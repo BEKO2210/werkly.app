@@ -201,7 +201,7 @@ class _EmptyDeals extends StatelessWidget {
             Text(
               hasAny
                   ? 'Keine Deals für diesen Filter'
-                  : 'Noch keine Deals — Brand-Collabs tracken',
+                  : 'Keine Deals — Brand-Anfrage tracken',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -217,7 +217,7 @@ class _EmptyDeals extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onCta,
                 icon: const Icon(Icons.add),
-                label: const Text('Ersten Deal anlegen'),
+                label: const Text('Brand-Anfrage tracken'),
               ),
             ],
           ],

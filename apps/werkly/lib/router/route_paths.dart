@@ -40,6 +40,7 @@ abstract final class RoutePaths {
   static const monetizeSoon = '/more/monetize/soon';
   static const paywall = '/paywall';
   static const settings = '/more/settings';
+  static const account = '/more/account';
   static const legal = '/more/legal';
 
   /// Path helpers for param routes.
@@ -84,6 +85,7 @@ abstract final class RouteNames {
   static const salesList = 'salesList';
   static const paywall = 'paywall';
   static const settings = 'settings';
+  static const account = 'account';
   static const legalWeb = 'legalWeb';
   static const monetizeComingSoon = 'monetizeComingSoon';
 }

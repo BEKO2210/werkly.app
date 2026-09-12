@@ -1,4 +1,4 @@
-/// Screen-IDs S-xx mirroring MOBILE-ARCH-CODEPLAN-MVP-V1.md §4 exactly.
+/// Screen-IDs S-xx mirroring MOBILE-ARCH-CODEPLAN-MVP-V1.md §4 + S-63 Account.
 abstract final class ScreenIds {
   // Auth & Onboarding
   static const splashAuth = 'S-00';
@@ -41,5 +41,7 @@ abstract final class ScreenIds {
   static const paywall = 'S-60';
   static const settings = 'S-61';
   static const legalWeb = 'S-62';
+  /// Account — Belkis live (UI-POLISH-HAPPYPATH-V1).
+  static const account = 'S-63';
   static const monetizeComingSoon = 'S-70';
 }

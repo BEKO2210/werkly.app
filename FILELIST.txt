@@ -178,3 +178,17 @@ apps/werkly/test/features/deals/deal_quota_csv_test.dart
 apps/werkly/test/features/hub/hub_slug_gate_test.dart
 apps/werkly/test/features/monetize/monetize_quota_connect_test.dart
 apps/werkly/test/widget_smoke_test.dart
+
+# P0 Live-Auth-Account (2026-09-12)
+apps/werkly/lib/ui/theme/brand_colors.dart
+apps/werkly/lib/ui/theme/app_spacing.dart
+apps/werkly/lib/ui/widgets/empty_state.dart
+apps/werkly/lib/core/config/app_env.dart
+apps/werkly/lib/core/config/app_flags.dart
+apps/werkly/lib/core/auth/auth_session.dart
+apps/werkly/lib/core/auth/auth_service.dart
+apps/werkly/lib/core/auth/session_providers.dart
+apps/werkly/lib/core/secure/llm_key_store.dart
+apps/werkly/lib/core/network/connectivity_providers.dart
+apps/werkly/lib/features/account/account_screen.dart
+LIVE-AUTH-ACCOUNT-V1-CHANGELOG.md

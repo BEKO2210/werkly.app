@@ -1,7 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:werkly/core/auth/session_providers.dart';
+import 'package:werkly/core/config/app_flags.dart';
 import 'package:werkly/core/entitlements/entitlements.dart';
 import 'package:werkly/core/entitlements/quota_policy.dart';
+import 'package:werkly/core/network/supabase_client.dart';
 import 'package:werkly/features/captions/data/caption_memory_store.dart';
 import 'package:werkly/features/captions/data/edge_caption_client.dart';
 import 'package:werkly/features/captions/data/local_caption_repository.dart';
@@ -14,7 +17,21 @@ final captionMemoryStoreProvider = Provider<CaptionMemoryStore>((ref) {
 });
 
 final edgeCaptionClientProvider = Provider<EdgeCaptionClient>((ref) {
-  return EdgeCaptionClient();
+  final auth = ref.watch(authServiceProvider);
+  final keys = ref.watch(llmKeyStoreProvider);
+  return EdgeCaptionClient(
+    baseUrl: WerklySupabase.url,
+    accessTokenProvider: () => auth.accessToken(),
+    llmApiKeyProvider: () => keys.read(),
+    // Live path: no mock header unless flags force mockCaptions.
+    mockHeader: AppFlags.mockCaptions,
+  );
+});
+
+/// True when generate will use local Mock (UI badge).
+final captionsUseMockProvider = Provider<bool>((ref) {
+  final edge = ref.watch(edgeCaptionClientProvider);
+  return AppFlags.mockCaptions || !edge.isConfigured;
 });
 
 final captionRepositoryProvider = Provider<CaptionRepository>((ref) {
@@ -22,6 +39,7 @@ final captionRepositoryProvider = Provider<CaptionRepository>((ref) {
     store: ref.watch(captionMemoryStoreProvider),
     mock: MockCaptionGenerator(),
     edge: ref.watch(edgeCaptionClientProvider),
+    preferMock: AppFlags.mockCaptions,
   );
 });
 
@@ -45,10 +63,8 @@ final captionGenerationProvider =
 final captionOnlineProvider = FutureProvider<bool>((ref) async {
   try {
     final result = await Connectivity().checkConnectivity();
-    // connectivity_plus 6+: List<ConnectivityResult>
     return result.any((e) => e != ConnectivityResult.none);
   } catch (_) {
-    // Degraded: allow mock path in tests / missing plugin.
     return true;
   }
 });
@@ -133,7 +149,6 @@ final captionGenerateNotifierProvider =
   return CaptionGenerateNotifier(ref);
 });
 
-/// Helper for soft-gate checks in UI before navigation.
 bool captionWouldSoftGate(WidgetRef ref, int used) {
   final isPro = ref.read(isProProvider);
   return QuotaPolicy.shouldBlockCaptionGenerate(

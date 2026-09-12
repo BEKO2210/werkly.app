@@ -7,6 +7,7 @@ import 'package:werkly/features/captions/domain/caption_validation.dart';
 import 'package:werkly/features/captions/providers/caption_providers.dart';
 import 'package:werkly/router/route_paths.dart';
 import 'package:werkly/router/screen_ids.dart';
+import 'package:werkly/ui/theme/app_spacing.dart';
 import 'package:werkly/ui/widgets/quota_banner.dart';
 
 /// Screen-ID: S-20 — Caption home (topic, DE|EN, tone/platform, generate).
@@ -118,11 +119,23 @@ class _CaptionHomeScreenState extends ConsumerState<CaptionHomeScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'S-20 · AI Caption & Hook',
-            style: TextStyle(fontSize: 12),
+          Row(
+            children: [
+              Text(
+                'S-20 · AI Caption & Hook',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const Spacer(),
+              if (ref.watch(captionsUseMockProvider))
+                Chip(
+                  label: const Text('Mock'),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+            ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           quotaAsync.when(
             data: (q) => QuotaBanner(
               used: q.used,
