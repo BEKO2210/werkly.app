@@ -4,6 +4,7 @@
 .github/workflows/release-internal.yml
 .gitignore
 F1-CHANGELOG.md
+F2-CHANGELOG.md
 FILELIST.txt
 README.md
 apps/werkly/.metadata
@@ -31,6 +32,10 @@ apps/werkly/android/gradle/wrapper/gradle-wrapper.properties
 apps/werkly/android/local.properties.example
 apps/werkly/android/settings.gradle.kts
 apps/werkly/assets/.gitkeep
+apps/werkly/assets/contracts/mocks/generate-caption-200-en.json
+apps/werkly/assets/contracts/mocks/generate-caption-200.json
+apps/werkly/assets/contracts/mocks/generate-caption-400.json
+apps/werkly/assets/contracts/mocks/generate-caption-402.json
 apps/werkly/lib/app.dart
 apps/werkly/lib/bootstrap.dart
 apps/werkly/lib/core/config/flavor.dart
@@ -65,6 +70,15 @@ apps/werkly/lib/features/calendar/widgets/week_strip.dart
 apps/werkly/lib/features/captions/caption_favorites_screen.dart
 apps/werkly/lib/features/captions/caption_home_screen.dart
 apps/werkly/lib/features/captions/caption_result_screen.dart
+apps/werkly/lib/features/captions/data/caption_memory_store.dart
+apps/werkly/lib/features/captions/data/edge_caption_client.dart
+apps/werkly/lib/features/captions/data/local_caption_repository.dart
+apps/werkly/lib/features/captions/data/mock_caption_generator.dart
+apps/werkly/lib/features/captions/domain/caption_models.dart
+apps/werkly/lib/features/captions/domain/caption_repository.dart
+apps/werkly/lib/features/captions/domain/caption_validation.dart
+apps/werkly/lib/features/captions/providers/caption_providers.dart
+apps/werkly/lib/features/captions/widgets/caption_variant_card.dart
 apps/werkly/lib/features/deals/deal_editor_screen.dart
 apps/werkly/lib/features/deals/deal_export_screen.dart
 apps/werkly/lib/features/deals/deal_list_screen.dart
@@ -101,4 +115,6 @@ apps/werkly/lib/ui/widgets/quota_banner.dart
 apps/werkly/pubspec.yaml
 apps/werkly/test/features/calendar/local_calendar_crud_test.dart
 apps/werkly/test/features/calendar/post_validation_quota_test.dart
+apps/werkly/test/features/captions/caption_validation_quota_test.dart
+apps/werkly/test/features/captions/edge_caption_client_test.dart
 apps/werkly/test/widget_smoke_test.dart

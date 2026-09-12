@@ -6,6 +6,7 @@ import 'package:werkly/features/calendar/post_editor_screen.dart';
 import 'package:werkly/features/calendar/reminder_settings_screen.dart';
 import 'package:werkly/features/calendar/week_calendar_screen.dart';
 import 'package:werkly/features/calendar/week_template_picker_screen.dart';
+import 'package:werkly/features/captions/domain/caption_models.dart';
 import 'package:werkly/features/captions/caption_favorites_screen.dart';
 import 'package:werkly/features/captions/caption_home_screen.dart';
 import 'package:werkly/features/captions/caption_result_screen.dart';
@@ -101,7 +102,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'post',
                     name: RouteNames.postEditor,
-                    builder: (context, state) => const PostEditorScreen(),
+                    builder: (context, state) {
+                      final extra = state.extra;
+                      final prefill = extra is CaptionPrefill ? extra : null;
+                      return PostEditorScreen(captionPrefill: prefill);
+                    },
                     routes: [
                       GoRoute(
                         path: ':id',

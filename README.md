@@ -2,7 +2,7 @@
 
 Android-first content planning MVP (`com.werkly.app`).
 
-This repository is the Flutter scaffold under `apps/werkly`. Feature **F1 — Wochen-Content-Kalender** is implemented as a **usable** offline-first slice (real local CRUD, soft paywall, local reminders).
+This repository is the Flutter scaffold under `apps/werkly`.
 
 ## F1 — Wochen-Content-Kalender
 
@@ -13,35 +13,43 @@ This repository is the Flutter scaffold under `apps/werkly`. Feature **F1 — Wo
 | ReminderSettingsScreen | S-12 | `/planen/reminder-settings` |
 | WeekTemplatePickerScreen | S-13 | `/planen/templates` |
 
-**Contracts baked in**
+- Free: **10 posts / ISO week (Europe/Berlin)** · local reminders · offline-first SQLite
+- Copy: **„Reminder · manuell posten“**
 
-- Local upsert by `client_id`; remote upsert on `(user_id, client_id)` when Supabase is configured
-- Free quota = **10 posts per ISO week (Europe/Berlin)** — not rolling 7 days
-- Reminders are **local only** (flutter_local_notifications) — no server push
-- Offline-readable + sync queue (`syncPending`) when online
-- Copy: **„Reminder · manuell posten“** — never auto-publish
+## F2 — AI Caption & Hook Generator
+
+| Screen | ID | Path |
+|--------|----|------|
+| CaptionHomeScreen | S-20 | `/texte` |
+| CaptionResultScreen | S-21 | `/texte/result/:generationId` |
+| CaptionFavoritesScreen | S-22 | `/texte/favorites` |
+
+**Contracts**
+
+- Edge: `POST /functions/v1/generate-caption` (see `novaforge-product/contracts/GENERATE-CAPTION-V1.md`)
+- Free: **10 generations / calendar month (UTC `YYYY-MM`)** → soft paywall `limit_captions`
+- Local `MockCaptionGenerator` when Supabase not configured — JSON shapes match `assets/contracts/mocks/`
+- Deep-link **In Kalender** → PostEditor with `CaptionPrefill` (`go_router` extra)
+- Online required for generate; policy reject on empty / `BLOCK`
 
 ## Run
 
 ```bash
 cd apps/werkly
 flutter pub get
-# Drift table sources are present; full typed DAO codegen (optional upgrade path):
-dart run build_runner build --delete-conflicting-outputs
 flutter run --flavor dev -t lib/main_dev.dart
 # or:
 flutter run -t lib/main.dart
 ```
-
-**Note:** Runtime F1 CRUD uses `CalendarSqliteStore` (Drift `NativeDatabase` + schema aligned with `calendar_posts`). After `build_runner`, you can migrate to generated `AppDatabase` / DAO — see `lib/features/calendar/data/drift/`.
 
 ## Tests
 
 ```bash
 cd apps/werkly
 flutter test test/features/calendar/
+flutter test test/features/captions/
 ```
 
 ## Out of scope (this slice)
 
-Real Supabase keys, F2–F5 business logic, Play Store upload, auto-publish to networks.
+Real LLM keys, video gen, GitHub push, Play Store upload, auto-publish.

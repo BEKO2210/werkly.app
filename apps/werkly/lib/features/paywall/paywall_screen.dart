@@ -19,6 +19,8 @@ class PaywallScreen extends StatelessWidget {
         'Mehr als 10 Posts/ISO-Woche — mit Pro unbegrenzt planen',
       QuotaPolicy.paywallTriggerTemplates =>
         'Wochen-Vorlagen sind Teil von Werkly Pro',
+      QuotaPolicy.paywallTriggerCaptions =>
+        '10 Captions/Monat aufgebraucht — mit Pro weiter generieren (DE/EN)',
       _ => 'Mehr Kontingent, Insights und Deals mit Pro.',
     };
 

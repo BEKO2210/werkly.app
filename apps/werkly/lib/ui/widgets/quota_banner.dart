@@ -5,7 +5,7 @@ import 'package:werkly/core/entitlements/entitlements.dart';
 import 'package:werkly/core/entitlements/quota_policy.dart';
 import 'package:werkly/router/route_paths.dart';
 
-/// Soft upsell banner. When [used]/[limit] are set, shows weekly calendar quota.
+/// Soft upsell banner. When [used]/[limit] are set, shows quota line.
 class QuotaBanner extends ConsumerWidget {
   const QuotaBanner({
     super.key,
@@ -17,6 +17,7 @@ class QuotaBanner extends ConsumerWidget {
 
   final int? used;
   final int? limit;
+  /// Short noun ("Posts") or full custom line if it already contains `/`.
   final String? label;
   final String? trigger;
 
@@ -27,9 +28,15 @@ class QuotaBanner extends ConsumerWidget {
 
     final u = used;
     final l = limit ?? QuotaPolicy.freeWeeklyCalendarPosts;
-    final text = (u != null)
-        ? '${label ?? "Posts"} · $u/$l Free'
-        : 'Free-Kontingent · Pro ab 9,99 €/Mo';
+    final custom = label;
+    final String text;
+    if (custom != null && custom.contains('/')) {
+      text = custom;
+    } else if (u != null) {
+      text = '${custom ?? "Posts"} · $u/$l Free';
+    } else {
+      text = 'Free-Kontingent · Pro ab 9,99 €/Mo';
+    }
 
     final over = u != null && u >= l;
 

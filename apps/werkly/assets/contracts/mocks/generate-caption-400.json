@@ -1,0 +1,7 @@
+{
+  "error": "Prompt abgelehnt",
+  "code": "policy_reject",
+  "details": {
+    "reason": "empty_or_unsafe"
+  }
+}

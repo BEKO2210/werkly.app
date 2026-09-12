@@ -1,0 +1,11 @@
+{
+  "error": "Monatliches Caption-Kontingent aufgebraucht",
+  "code": "quota_exceeded",
+  "details": {
+    "used": 10,
+    "limit": 10,
+    "plan": "free",
+    "period": "2026-09",
+    "paywall_trigger": "limit_captions"
+  }
+}

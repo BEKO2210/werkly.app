@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:werkly/core/entitlements/quota_policy.dart';
 import 'package:werkly/features/calendar/domain/calendar_post.dart';
+import 'package:werkly/features/captions/domain/caption_models.dart';
 import 'package:werkly/features/calendar/providers/calendar_providers.dart';
 import 'package:werkly/features/calendar/widgets/platform_chips.dart';
 import 'package:werkly/router/route_paths.dart';
@@ -11,10 +12,13 @@ import 'package:werkly/router/screen_ids.dart';
 
 /// Screen-ID: S-11 — Create/edit calendar post (usable CRUD).
 class PostEditorScreen extends ConsumerStatefulWidget {
-  const PostEditorScreen({super.key, this.id});
+  const PostEditorScreen({super.key, this.id, this.captionPrefill});
 
   /// clientId when editing.
   final String? id;
+
+  /// F2 → F1 deep-link prefill (go_router `extra` or explicit).
+  final CaptionPrefill? captionPrefill;
 
   static const screenId = ScreenIds.postEditor;
 
@@ -41,6 +45,20 @@ class _PostEditorScreenState extends ConsumerState<PostEditorScreen> {
     if (_isEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadExisting());
     } else {
+      final pre = widget.captionPrefill;
+      if (pre != null) {
+        _captionCtrl.text = pre.captionPrefill;
+        final hint = pre.platformHint;
+        if (hint != null && hint != CaptionPlatformHint.neutral) {
+          _platforms.add(switch (hint) {
+            CaptionPlatformHint.ig => PostPlatform.ig,
+            CaptionPlatformHint.tiktok => PostPlatform.tiktok,
+            CaptionPlatformHint.yt => PostPlatform.youtube,
+            CaptionPlatformHint.other => PostPlatform.other,
+            CaptionPlatformHint.neutral => PostPlatform.other,
+          });
+        }
+      }
       _hydrated = true;
     }
   }
