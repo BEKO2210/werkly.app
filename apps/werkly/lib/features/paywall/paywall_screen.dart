@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:werkly/core/entitlements/quota_policy.dart';
+import 'package:werkly/router/screen_ids.dart';
 
 /// Screen-ID: S-60 — Soft paywall stub (9,99 €/Mo + Restore). No store calls.
 class PaywallScreen extends StatelessWidget {
   const PaywallScreen({super.key});
 
-  static const screenId = 'S-60';
+  static const screenId = ScreenIds.paywall;
   static const proPriceLabel = '9,99 €/Mo';
 
   @override
   Widget build(BuildContext context) {
+    final trigger =
+        GoRouterState.of(context).uri.queryParameters['trigger'] ?? '';
+    final headline = switch (trigger) {
+      QuotaPolicy.paywallTriggerCalendar =>
+        'Mehr als 10 Posts/ISO-Woche — mit Pro unbegrenzt planen',
+      QuotaPolicy.paywallTriggerTemplates =>
+        'Wochen-Vorlagen sind Teil von Werkly Pro',
+      _ => 'Mehr Kontingent, Insights und Deals mit Pro.',
+    };
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Werkly Pro (S-60)'),
+        title: const Text('Werkly Pro'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -24,10 +37,15 @@ class PaywallScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Mehr Kontingent, Insights und Deals mit Pro.',
-              textAlign: TextAlign.center,
-            ),
+            Text(headline, textAlign: TextAlign.center),
+            if (trigger.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                'trigger=$trigger',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 11),
+              ),
+            ],
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () {
@@ -41,6 +59,11 @@ class PaywallScreen extends StatelessWidget {
                 // Restore purchases stub.
               },
               child: const Text('Käufe wiederherstellen'),
+            ),
+            const Spacer(),
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text('Weiter im Free-Modus (Inhalt lesbar)'),
             ),
           ],
         ),

@@ -6,6 +6,7 @@ abstract final class EntitlementIds {
 }
 
 /// Soft stub — always free until RC is wired. No secrets.
-final isProProvider = Provider<bool>((ref) => false);
+/// Override in tests: `isProProvider.overrideWith((ref) => true)`.
+final isProProvider = StateProvider<bool>((ref) => false);
 
 bool get isProStub => false;
