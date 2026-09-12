@@ -1,0 +1,108 @@
+# Werkly Internal RC → Play Internal (manual)
+# Requires GitHub Environment `play-internal` + secrets (see SECRETS-CHECKLIST.md)
+# Scaffold today still uses debug signingConfig — replace before first Play upload.
+# Production: NEVER — use promote.yml only after Belkis+Stabschef approval.
+name: release-internal
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: "versionName (e.g. 0.1.0)"
+        required: true
+        type: string
+      build_number:
+        description: "versionCode / build number (monotone)"
+        required: true
+        type: string
+      upload_play:
+        description: "Upload AAB to Play Internal"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-internal
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: apps/werkly
+
+jobs:
+  build-internal:
+    name: build AAB (internal)
+    runs-on: ubuntu-latest
+    environment: play-internal
+    timeout-minutes: 60
+    env:
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      RELEASE_NAME: werkly@${{ inputs.version_name }}+${{ inputs.build_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: bump version in pubspec
+        run: |
+          sed -i -E "s/^version: .*/version: ${{ inputs.version_name }}+${{ inputs.build_number }}/" pubspec.yaml
+          grep '^version:' pubspec.yaml
+
+      - name: sentry release (new)
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli releases new "$RELEASE_NAME"
+          sentry-cli releases set-commits "$RELEASE_NAME" --auto || true
+
+      - name: build appbundle (internal / staging entry)
+        env:
+          # Pass real values via Environment secrets / vars — never commit
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN_INTERNAL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL_STAGING }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_STAGING }}
+        run: |
+          flutter build appbundle --release \
+            -t lib/main_staging.dart \
+            --dart-define=FLAVOR=internal \
+            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
+            --dart-define=SENTRY_ENVIRONMENT=internal \
+            --dart-define=SENTRY_RELEASE="$RELEASE_NAME" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+
+      - name: upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: werkly-internal-${{ inputs.version_name }}+${{ inputs.build_number }}
+          path: apps/werkly/build/app/outputs/bundle/release/*.aab
+          retention-days: 14
+
+      - name: sentry finalize + deploy
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: |
+          sentry-cli releases finalize "$RELEASE_NAME"
+          sentry-cli releases deploys "$RELEASE_NAME" new -e internal
+
+      - name: upload to Play Internal
+        if: ${{ inputs.upload_play }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.werkly.app
+          releaseFiles: apps/werkly/build/app/outputs/bundle/release/*.aab
+          track: internal
+          status: draft

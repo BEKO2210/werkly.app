@@ -1,0 +1,75 @@
+# Promote Play tracks — HARD GATED.
+# Production: Environment `play-production` required reviewers = Belkis + Stabschef.
+# confirm_token must be exactly PROMOTE. No schedule. No tag auto-promote.
+# Until Play Developer API promote is fully wired, this workflow enforces the
+# human gate and prints Console steps (safe no-op on store).
+name: promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_track:
+        description: "Play track"
+        required: true
+        type: choice
+        options:
+          - closed
+          - production
+      version_code:
+        description: "versionCode to promote"
+        required: true
+        type: string
+      confirm_token:
+        description: "Type PROMOTE to proceed"
+        required: true
+        type: string
+      approver_note:
+        description: "Freigabe-Referenz (Belkis+Stabschef)"
+        required: true
+        type: string
+      user_fraction:
+        description: "Phased rollout for production (e.g. 0.1 = 10%)"
+        required: false
+        type: string
+        default: "0.1"
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: require PROMOTE token
+        if: ${{ inputs.confirm_token != 'PROMOTE' }}
+        run: |
+          echo "confirm_token must be exactly PROMOTE"
+          exit 1
+      - name: log gate
+        run: |
+          echo "track=${{ inputs.target_track }}"
+          echo "versionCode=${{ inputs.version_code }}"
+          echo "note=${{ inputs.approver_note }}"
+
+  promote-closed:
+    needs: guard
+    if: ${{ inputs.target_track == 'closed' }}
+    runs-on: ubuntu-latest
+    environment: play-closed
+    steps:
+      - name: Console promote Internal → Closed
+        run: |
+          echo "QA Gates G1–G5 must be green."
+          echo "Play Console: move versionCode ${{ inputs.version_code }} from Internal to Closed testing."
+          echo "API auto-promote: wire later with PLAY_SERVICE_ACCOUNT_JSON (edits.tracks.update)."
+
+  promote-production:
+    needs: guard
+    if: ${{ inputs.target_track == 'production' }}
+    runs-on: ubuntu-latest
+    environment: play-production
+    steps:
+      - name: Console promote → Production (phased)
+        run: |
+          echo "Freigabe required via Environment reviewers (Belkis + Stabschef)."
+          echo "Play Console: promote versionCode ${{ inputs.version_code }} to Production."
+          echo "Start phased rollout at userFraction=${{ inputs.user_fraction }} (default 10%)."
+          echo "Halt on Sentry crash spike / P0. Full 100% only after 24–48h + Freigabe."
+          echo "Approver note: ${{ inputs.approver_note }}"

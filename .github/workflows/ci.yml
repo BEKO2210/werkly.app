@@ -1,0 +1,57 @@
+# Werkly CI — PR + push main
+# App path: apps/werkly · applicationId: com.werkly.app
+# No signing, no Play upload. Production never runs here.
+name: ci
+
+on:
+  pull_request:
+    paths:
+      - "apps/werkly/**"
+      - ".github/workflows/ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/werkly/**"
+      - ".github/workflows/ci.yml"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/werkly
+
+jobs:
+  analyze-test:
+    name: analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: analyze
+        run: flutter analyze --fatal-infos
+
+      - name: test
+        run: flutter test
+
+  # Optional smoke — enable when Android licenses + longer runners are OK
+  # android-debug-apk:
+  #   needs: analyze-test
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   steps: ... flutter build apk --debug -t lib/main_dev.dart
